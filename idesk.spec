@@ -12,7 +12,6 @@ Source: 	%{name}-%{version}.tar.bz2
 URL: 		http://idesk.sourceforge.net/
 Buildrequires:	imlib2-devel gtk2-devel
 Buildrequires:  libart_lgpl-devel
-BuildRoot: 	%{_tmppath}/%{name}-buildroot
 
 
 %description
