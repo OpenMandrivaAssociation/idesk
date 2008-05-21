@@ -1,6 +1,6 @@
 %define name idesk
 %define version 0.7.5
-%define release %mkrel 1
+%define release %mkrel 2
 
 Version: 	%{version}
 Summary: 	Plops icons on your root window
@@ -11,7 +11,7 @@ Group: 		Graphical desktop/Other
 Source: 	%{name}-%{version}.tar.bz2
 URL: 		http://idesk.sourceforge.net/
 Buildrequires:	imlib2-devel gtk2-devel
-Buildrequires:  libart_lgpl-devel
+Buildrequires:  libart_lgpl-devel startup-notification-devel
 BuildRoot: 	%{_tmppath}/%{name}-buildroot
 
 
@@ -30,7 +30,7 @@ want KDE or gnome doing it, you can use idesk.
 %{__perl} -pi.orig -e 's|/usr/local/share|%_datadir|g;' examples/default.lnk
 
 %build
-%configure
+%configure2_5x --enable-libsn
 %make
 
 
