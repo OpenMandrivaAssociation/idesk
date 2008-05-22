@@ -1,6 +1,6 @@
 %define name idesk
 %define version 0.7.5
-%define release %mkrel 3
+%define release %mkrel 4
 
 Version: 	%{version}
 Summary: 	Plops icons on your root window
