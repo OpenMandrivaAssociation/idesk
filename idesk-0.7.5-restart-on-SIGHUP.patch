@@ -1,0 +1,76 @@
+diff -p -up ./idesk-0.7.5/src/App.cpp.fork ./idesk-0.7.5/src/App.cpp
+--- idesk-0.7.5/src/App.cpp.fork	2005-09-02 07:06:54.000000000 +0200
++++ idesk-0.7.5/src/App.cpp	2008-05-22 16:30:35.000000000 +0200
+@@ -24,6 +24,7 @@
+ 
+ #include "App.h"
+ #include <signal.h>
++#include "AbstractClasses.h"
+ /*#include <sys/wait.h>*/
+ 
+ Application::Application(int arg, char ** args) : AbstractApp(arg, args)
+@@ -32,7 +32,6 @@ Application::Application(int arg, char *
+     if (!processArguments())
+         _exit(1);
+ 
+-    startIdesk();
+ }
+ 
+ Application::~Application()
+@@ -66,8 +67,11 @@ void signalhandler(int sig){
+ 	if(sig == SIGCHLD){
+ 	  int status;
+ 	  waitpid(-1, &status, WNOHANG|WUNTRACED);
+-	}else{
+-	  _exit(1); 	
++	}else if (sig == SIGHUP ) {
++        app->restartIdesk();
++	    _exit(2);
++    }else {
++	    _exit(1); 	
+ 	}
+ }
+ 
+@@ -93,12 +97,11 @@ void Application::restartIdesk()
+ {
+     container->saveState();
+     cout << "restarting idesk\n";
+-    delete container;
+-    
+-    
++    cout << "restarting idesk\n";
++    //delete container;
+     //startIdesk();
+     //container->create();
+     //container->run();
+-
+     execvp( argv[0], argv );
++    cout << "restarting idesk failed\n";
+ }
+diff -p -up ./idesk-0.7.5/src/App.h.fork ./idesk-0.7.5/src/App.h
+--- idesk-0.7.5/src/App.h.fork	2005-09-02 07:05:28.000000000 +0200
++++ idesk-0.7.5/src/App.h	2008-05-22 16:29:36.000000000 +0200
+@@ -48,5 +48,5 @@ class Application : public AbstractApp
+         void restartIdesk(); 
+ };
+ 
+-
++extern Application *app;
+ #endif
+diff -p -up ./idesk-0.7.5/src/Main.cpp.fork ./idesk-0.7.5/src/Main.cpp
+--- idesk-0.7.5/src/Main.cpp.fork	2005-08-04 22:09:20.000000000 +0200
++++ idesk-0.7.5/src/Main.cpp	2008-05-22 16:29:36.000000000 +0200
+@@ -23,10 +23,11 @@
+  */
+ 
+ #include "App.h"
+-
++Application *app;
+ int main(int argc, char ** argv)
+ {
+-    Application * app = new Application(argc, argv);
++    app = new Application(argc, argv);
++    app->startIdesk();
+ 
+     delete app;
+ 

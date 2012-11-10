@@ -1,0 +1,70 @@
+diff -rup idesk-0.7.5/src/DesktopIconConfig.cpp ./idesk-0.7.5m/src/DesktopIconConfig.cpp
+--- idesk-0.7.5/src/DesktopIconConfig.cpp	2005-08-27 10:58:56.000000000 +0200
++++ ./idesk-0.7.5m/src/DesktopIconConfig.cpp	2008-05-22 15:00:28.000000000 +0200
+@@ -219,6 +219,8 @@ void CommonOptions::setOptions(Table t)
+ 
+     if (table.Query("SnapShadowTrans") != "")
+         snapShadowTrans = atoi(table.Query("SnapShadowTrans").c_str());
++    else
++        snapShadowTrans = 200; // defaults
+ 
+     //captionOnHover
+     if (getUpper(table.Query("CaptionOnHover")) == "TRUE")
+diff -rup idesk-0.7.5/src/XImlib2Image.cpp ./idesk-0.7.5m/src/XImlib2Image.cpp
+--- idesk-0.7.5/src/XImlib2Image.cpp	2005-09-11 08:17:58.000000000 +0200
++++ ./idesk-0.7.5m/src/XImlib2Image.cpp	2008-05-22 15:11:27.000000000 +0200
+@@ -50,12 +50,19 @@ void XImlib2Image::configure()
+ 		    dynamic_cast<DesktopConfig *>(config);
+ 
+     transparency = dConfig->getTransparency();
++    
+ 
+     width = dIconConfig->getWidth();
+     height = dIconConfig->getHeight();
+     
+     glowing = false;
+     glowChange = true;
++    if ( transparency >= 0 ) {
++        glowInvert = false; 
++    } else {
++        glowInvert = true;
++        transparency = - transparency ;
++    }
+ 
+     colorMod = imlib_create_color_modifier();
+     
+@@ -324,7 +331,7 @@ void XImlib2Image::applyMouseOverEffects
+ 		imlib_get_color_modifier_tables(mapNone, mapNone, mapNone, NULL);
+ 		imlib_reset_color_modifier();
+ 
+-	if (glowing == true)  // reset to standard alpha mapping
++	if ((glowing ^ glowInvert) == true)  // reset to standard alpha mapping
+            imlib_set_color_modifier_tables(mapNone, mapNone, mapNone, mapNone);
+ 	else  // remap alpha values lower to increase transparency
+ 	       imlib_set_color_modifier_tables(mapNone, mapNone, mapNone, defaultTransTable);
+diff -rup idesk-0.7.5/src/XImlib2Image.h ./idesk-0.7.5m/src/XImlib2Image.h
+--- idesk-0.7.5/src/XImlib2Image.h	2005-09-11 08:02:39.000000000 +0200
++++ ./idesk-0.7.5m/src/XImlib2Image.h	2008-05-22 14:54:35.000000000 +0200
+@@ -55,7 +55,7 @@ class XImlib2Image : public AbstractImag
+ 	/* Test para SVG*/
+     unsigned char *rgb, *alpha, *alpha2;
+ 	
+-    bool glowing, glowChange;
++    bool glowing, glowChange, glowInvert;
+ 
+     int transparency;
+     Imlib_Color_Modifier colorMod;
+diff -rup idesk-0.7.5/src/XImlib2Shadow.cpp ./idesk-0.7.5m/src/XImlib2Shadow.cpp
+--- idesk-0.7.5/src/XImlib2Shadow.cpp	2005-08-27 07:40:15.000000000 +0200
++++ ./idesk-0.7.5m/src/XImlib2Shadow.cpp	2008-05-22 15:04:26.000000000 +0200
+@@ -53,8 +53,8 @@ void XImlib2Shadow::configure()
+     
+     transparency = dIconConfig->getSnapShadowTrans();
+ 
+-    if (transparency == -1 )
+-        transparency = 200; //default value
++    // if (transparency == -1 )
++    //    transparency = 200; //default value
+ 
+     imlib_context_set_image(image);
+     imlib_context_set_color_modifier(colorMod);

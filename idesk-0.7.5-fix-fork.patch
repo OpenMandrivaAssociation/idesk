@@ -1,0 +1,12 @@
+diff -rup idesk-0.7.5/src/XDesktopContainer.cpp ./idesk-0.7.5m/src/XDesktopContainer.cpp
+--- idesk-0.7.5/src/XDesktopContainer.cpp	2005-11-17 08:54:48.000000000 +0100
++++ ./idesk-0.7.5m/src/XDesktopContainer.cpp	2008-05-22 11:08:03.000000000 +0200
+@@ -590,7 +590,7 @@ void XDesktopContainer::runCommand(const
+ {
+      pid_t pid;   
+     //fork and execute program
+-    if (pid=fork() != 0) { //Primer proceso hijo
++    if (pid=fork() == 0) { //Primer proceso hijo: C'est moi le fils
+ #ifdef HAVE_STARTUP_NOTIFICATION
+ 	    if (sn_context != NULL)
+ 		     sn_launcher_context_setup_child_process (sn_context);
