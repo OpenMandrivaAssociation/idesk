@@ -1,0 +1,11 @@
+--- idesk-0.7.5/src/DesktopConfig.cpp.cstdlib	2005-11-11 02:07:58.000000000 +0300
++++ idesk-0.7.5/src/DesktopConfig.cpp	2012-11-07 14:57:57.537797222 +0400
+@@ -24,6 +24,8 @@
+ 
+ #include "DesktopConfig.h"
+ #include "Util.h"
++#include <sys/types.h>
++#include <sys/stat.h>
+ 
+ //the initilizer list just sets the program defaults for non-necessary options
+ DesktopConfig::DesktopConfig(Database db, string ideskrcFile) :

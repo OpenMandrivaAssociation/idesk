@@ -1,22 +1,22 @@
 %define name idesk
 %define version 0.7.5
-%define release %mkrel 7
+%define release %mkrel 6
 
 Version: 	%{version}
 Summary: 	Plops icons on your root window
 Name: 		%{name}
 Release: 	%{release}
-License: 	GPL
+License: 	BSD
 Group: 		Graphical desktop/Other
-Source: 	%{name}-%{version}.tar.bz2
+Source0: 	%{name}-%{version}.tar.bz2
 Patch0:		idesk-0.7.5-fix-fork.patch
 Patch1:		idesk-0.7.5-invert-glowing.patch
 Patch2:		idesk-0.7.5-restart-on-SIGHUP.patch
+patch3:		idesk-0.7.5.cstdlib.patch
 URL: 		http://idesk.sourceforge.net/
-Buildrequires:	imlib2-devel gtk2-devel
+Buildrequires:	imlib2-devel pkgconfig(gtk+-2.0)
 Buildrequires:  libart_lgpl-devel startup-notification-devel
-BuildRoot: 	%{_tmppath}/%{name}-buildroot
-
+Buildrequires:	pkgconfig(xft)
 
 %description
 iDesk gives users of minimal wm's (fluxbox, pekwm, windowmaker...) icons on
@@ -34,23 +34,16 @@ want KDE or gnome doing it, you can use idesk.
 %patch0 -p1 -b .fork
 %patch1 -p1 -b .glow
 %patch2 -p1 -b .HUP
+%patch3 -p1 -b .cstdlib
 
 %build
 %configure2_5x --enable-libsn
 %make
 
-
 %install
-%__rm -rf %buildroot
 %makeinstall
 
-%clean
-%__rm -rf %buildroot
-
-
 %files
-%defattr (-,root,root)
 %doc README AUTHORS ChangeLog COPYING NEWS TODO
 %{_bindir}/*
 %{_datadir}/%{name}/
-
