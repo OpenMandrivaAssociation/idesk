@@ -13,7 +13,7 @@ Patch0:		idesk-0.7.5-fix-fork.patch
 Patch1:		idesk-0.7.5-invert-glowing.patch
 Patch2:		idesk-0.7.5-restart-on-SIGHUP.patch
 patch3:		idesk-0.7.5.cstdlib.patch
-URL: 		http://idesk.sourceforge.net/
+URL: 		https://idesk.sourceforge.net/
 Buildrequires:	imlib2-devel pkgconfig(gtk+-2.0)
 Buildrequires:  libart_lgpl-devel startup-notification-devel
 Buildrequires:	pkgconfig(xft)
